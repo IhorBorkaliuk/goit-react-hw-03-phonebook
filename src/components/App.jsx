@@ -7,6 +7,8 @@ import { ContactList } from './ContactsList/ContactsList';
 import { Filter } from './Filter/Filter';
 import { Title } from './ContactsList/ContactsListStyled';
 
+const LOCALE_STORAGE_KEY = 'AddedContacts'
+
 
 export class App extends Component {
   state = {
@@ -54,6 +56,16 @@ export class App extends Component {
       };
     });
   };
+
+
+  componentDidUpdate() {
+    localStorage.setItem(LOCALE_STORAGE_KEY, JSON.stringify(this.state.contacts))
+  }
+
+  componentDidMount() {
+    const AddedContacts = JSON.parse(localStorage.getItem(LOCALE_STORAGE_KEY))
+    this.setState({ contacts: AddedContacts })
+  }
 
   render() {
     const { handleChange, addContact, deleteFromContacts } = this;
