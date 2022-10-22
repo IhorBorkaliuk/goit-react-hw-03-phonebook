@@ -70,11 +70,12 @@ export class App extends Component {
   render() {
     const { handleChange, addContact, deleteFromContacts } = this;
     const { filter } = this.state;
+    console.log(this.state.contacts.length)
     return (
       <div>
         <Title>Phonebook</Title>
         <Form onSubmit={addContact} />
-        {this.state.contacts.length >= 1 ? (
+        {this.state.contacts &&
           <>
             <Title>Contacts</Title>
             <ContactList
@@ -82,10 +83,7 @@ export class App extends Component {
               deleteFromContacts={deleteFromContacts}
             />
             <Filter handleChange={handleChange} value={filter} />
-          </>
-        ) : (
-          ''
-        )}
+          </>}
       </div>
     );
   }
