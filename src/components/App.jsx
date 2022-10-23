@@ -9,6 +9,13 @@ import { Title } from './ContactsList/ContactsListStyled';
 
 const LOCALE_STORAGE_KEY = 'AddedContacts'
 
+  // const parseDataFromLS = key => {
+  //   try {
+  //     return JSON.parse(localStorage.getItem(key)) ?? [];
+  //   } catch (error) {
+  //     return []
+  //   }
+  // };
 
 export class App extends Component {
   state = {
@@ -57,25 +64,36 @@ export class App extends Component {
     });
   };
 
+  componentDidUpdate(_, prevState) {
+    const { filter } = this.state
+    if (filter !== prevState.filter) return;
 
-  componentDidUpdate() {
-    localStorage.setItem(LOCALE_STORAGE_KEY, JSON.stringify(this.state.contacts))
+    localStorage.setItem(
+      LOCALE_STORAGE_KEY,
+      JSON.stringify(this.state.contacts)
+    );
   }
 
   componentDidMount() {
-    const AddedContacts = JSON.parse(localStorage.getItem(LOCALE_STORAGE_KEY))
-    this.setState({ contacts: AddedContacts })
-  }
+    try {
+    const AddedContacts = JSON.parse(localStorage.getItem(LOCALE_STORAGE_KEY));
+      if (AddedContacts) {
+        this.setState({ contacts: AddedContacts })
+      }
+    } catch (error) {
+      this.state({ contacts: [] });
+    }
+    }
 
+  
   render() {
     const { handleChange, addContact, deleteFromContacts } = this;
-    const { filter } = this.state;
-    console.log(this.state.contacts.length)
+    const { filter, contacts } = this.state;
     return (
       <div>
         <Title>Phonebook</Title>
         <Form onSubmit={addContact} />
-        {this.state.contacts &&
+        {contacts.length > 0 && (
           <>
             <Title>Contacts</Title>
             <ContactList
@@ -83,7 +101,8 @@ export class App extends Component {
               deleteFromContacts={deleteFromContacts}
             />
             <Filter handleChange={handleChange} value={filter} />
-          </>}
+          </>
+        )}
       </div>
     );
   }
